@@ -18,25 +18,35 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def getFinnaRecords(lookfor):
 	resultlimit = 100
-	sleeptime = 1
+	sleeptime = 3
 	searchfilter = "~usage_rights_str_mv%3A\"usage_B\""
 	page = 1
 	query = "https://api.finna.fi/v1/search?lookfor={0}&type=AllFields&limit={1}&filter[]={2}&page={3}"
 
 	response_dict = []
 
-	print("getting records for " + lookfor)
+	allfromcache = True
+
+	sys.stdout.write("getting records for " + lookfor)
+	sys.stdout.flush()
 	while True:
 		url = query.format(urllib.quote(lookfor), resultlimit, searchfilter, page)
-		response_dict.append(requests.get(url).json())
+		response = requests.get(url)
+		response_dict.append(response.json())
 		sys.stdout.write('.')
-		time.sleep(sleeptime)
+		sys.stdout.flush()
+		if not response.from_cache:
+			time.sleep(sleeptime)
+			allfromcache = False
 		resultnumber = response_dict[0]['resultCount']
 		page += 1
 
 		if page * resultlimit > resultnumber:
+			sys.stdout.write('\n')
 			break
 
+	if not allfromcache:
+		time.sleep(sleeptime)
 	images = []
 	for response in response_dict:
 		if int(response['resultCount']) > 0:
@@ -50,11 +60,11 @@ if not os.path.exists("data"):
 
 requests_cache.install_cache('data/finna_cache', backend='sqlite')
 
-searchterm = str(sys.argv[1])
+'''searchterm = str(sys.argv[1])
 
 records = getFinnaRecords(searchterm)
 
-pp.pprint(records)
+pp.pprint(records)'''
 
 #with open('data/' + searchterm + '.json', 'w') as outfile:
 #	json.dump(records, outfile)
