@@ -20,6 +20,7 @@ with open('data/streetnames.csv') as csvfile:
    	for row in reader:
 		streets.append(row['nimi'])
 
+streets.sort()
 
 requests_cache.install_cache('data/nominatim_cache', backend='sqlite')
 
@@ -41,23 +42,22 @@ for i in streets:
 	if response_dict[0]:
 		lon = response_dict[0][0]['lon']
 		lat = response_dict[0][0]['lat']
+		coords = lat + ',' + lon
 	else:
-		lon = "NA"
-		lat = "NA"
+		coords = "NA"
 
-	location = {'streetname' : i, 'lon' : lon, 'lat': lat}
+	location = {'streetname' : i, 'coordinates' : coords}
 
 	coordinates.append(location)
 
-row = ['streetname','lat','lon']
+row = ['streetname','latlong']
 with open('data/street-coordinates.csv', 'wb') as f:
 	writer = csv.writer(f)
 	writer.writerow(row)
 for street in coordinates:
 	row = []
 	row.append(street['streetname'])
-	row.append(street['lon'])
-	row.append(street['lat'])
+	row.append(street['coordinates'])
 	with open('data/street-coordinates.csv', 'ab') as f:
 		writer = csv.writer(f)
 		writer.writerow(row)
