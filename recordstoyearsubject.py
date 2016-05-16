@@ -3,6 +3,7 @@ import json
 import csv
 
 import sys
+import os
 
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -14,7 +15,7 @@ outputfile = 'data/yearsubject.json'
 
 years = []
 
-for street in data[0:5]:
+for street in data:
         for record in street['records']:
 		if 'year' in record.keys():
 			year = record['year']
@@ -37,5 +38,9 @@ for year in years:
 							subjects[subjectstring] += 1
 						else:
 							subjects[subjectstring] = 1
-	#subjects.sort()
-	print subjects
+	yearsubject[year] = subjects
+
+if not os.path.exists("data"):
+	os.makedirs("data")
+with open(outputfile, 'w') as outfile:
+	json.dump(yearsubject, outfile)
