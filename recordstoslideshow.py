@@ -15,8 +15,10 @@ outputfile = 'data/slideshow.csv'
 
 years = []
 
+outputfile = 'data/test.csv'
+
 for street in data:
-        for record in street['records']:
+	for record in street['records']:
 		if 'year' in record.keys():
 			year = record['year']
 			if year not in years:
@@ -24,9 +26,29 @@ for street in data:
 
 years.sort()
 
-print years
+'''print years'''
 
-yearsubject = {}
+photos = []
+
+
+'''go through years
+	go through records
+		if year == record year:
+			append'''
+
+for year in years:
+	for street in data:
+		for record in street['records']:
+			if 'year' in record.keys() and record['year'] == year:
+				'''print record['images']
+				print record['year']'''
+				for image in record['images']:
+					photos.append('https://api.finna.fi' + image)
+
+print len(photos)
+
+
+'''yearsubject = {}
 
 for year in years:
 	subjects = {}
@@ -41,7 +63,9 @@ for year in years:
 						else:
 							subjects[subjectstring] = 1
 	yearsubject[year] = subjects
+'''
 
+'''print yearsubject'''
 '''
 
 if not os.path.exists("data"):
