@@ -5,6 +5,9 @@ import csv
 import sys
 import os
 
+import urllib
+import time
+
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -36,16 +39,28 @@ photos = []
 		if year == record year:
 			append'''
 
-for year in years:
-	for street in data:
-		for record in street['records']:
-			if 'year' in record.keys() and record['year'] == year:
-				'''print record['images']
-				print record['year']'''
-				for image in record['images']:
-					photos.append('https://api.finna.fi' + image)
 
-print len(photos)
+if not os.path.exists("images"):
+	os.makedirs("images")
+
+
+for year in years:
+        	for street in data:
+                	for record in street['records']:
+                        	if 'year' in record.keys() and record['year'] == year:
+					'''create directory'''
+                                	for image in record['images']:
+               					'''photos.append('https://api.finna.fi' + image)'''
+						'''if file doesnt exist yet:'''
+						if not os.path.isfile("images/" + record['id'] + ".jpg"):
+							time.sleep(1)
+							urllib.urlretrieve ("https://api.finna.fi/Cover/Show?id=" + urllib.quote(record['id']) + "&fullres=1&index=0", "images/" + record['id'] + ".jpg")
+							'''print("https://api.finna.fi/Cover/Show?id=" + urllib.quote(record['id']) + "&fullres=1&index=0")'''
+
+
+
+
+'''print len(photos)'''
 
 
 '''yearsubject = {}
