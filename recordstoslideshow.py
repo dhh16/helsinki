@@ -65,12 +65,15 @@ for year in years:
 								author = "unknown"
 							subjects = ""
 
+							title = record['title']
+							source = str(record['id'])[0:3]
+
 							filepath = "images/processed/" + year + "_" + record['id'] + ".jpg"
 
 							if 'subjects' in record:
 								for subject in record['subjects']:
 									subjects = subjects + "\n" + subject[0]
-							subprocess.call("convert images/original/" + record['id'] + ".jpg -fill white  -undercolor '#00000080'  -gravity Southeast -annotate +5+5 'Year: " + year + "\nAuthor: " + author + "' " + filepath, shell=True)
+							subprocess.call("convert images/original/" + record['id'] + ".jpg -fill white  -undercolor '#00000080'  -gravity Southeast -annotate +5+5 'Title: " + title + "\nYear: " + year + "\nAuthor: " + author + "\nSource: " + source + "' " + filepath, shell=True)
 							subprocess.call("convert " + filepath + " -fill white  -undercolor '#00000080'  -gravity West -annotate +5+0 '" + subjects + "' " + filepath, shell=True)
 
 
