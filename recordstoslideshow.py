@@ -21,11 +21,7 @@ pp = pprint.PrettyPrinter(indent=4)
 with open('data/pasila-records-2016-05-17.json') as data_file:
 	data = json.load(data_file)
 
-outputfile = 'data/slideshow.csv'
-
 years = []
-
-outputfile = 'data/test.csv'
 
 for street in data:
 	for record in street['records']:
@@ -37,7 +33,6 @@ for street in data:
 years.sort()
 
 photos = []
-
 
 if not os.path.exists("images"):
 	os.makedirs("images")
@@ -69,11 +64,14 @@ for year in years:
 							else:
 								author = "unknown"
 							subjects = ""
+
+							filepath = "images/processed/" + year + "_" + record['id'] + ".jpg"
+
 							if 'subjects' in record:
 								for subject in record['subjects']:
 									subjects = subjects + "\n" + subject[0]
-							subprocess.call("convert images/original/" + record['id'] + ".jpg -fill white  -undercolor '#00000080'  -gravity Southeast -annotate +5+5 'Year: " + year + "\nAuthor: " + author + "' images/processed/"  + record['id'] + ".jpg", shell=True)
-							subprocess.call("convert images/processed/" + record['id'] + ".jpg -fill white  -undercolor '#00000080'  -gravity West -annotate +5+0 '" + subjects + "' images/processed/"  + record['id'] + ".jpg", shell=True)
+							subprocess.call("convert images/original/" + record['id'] + ".jpg -fill white  -undercolor '#00000080'  -gravity Southeast -annotate +5+5 'Year: " + year + "\nAuthor: " + author + "' " + filepath, shell=True)
+							subprocess.call("convert " + filepath + " -fill white  -undercolor '#00000080'  -gravity West -annotate +5+0 '" + subjects + "' " + filepath, shell=True)
 
 
 							value = record['value']
@@ -87,53 +85,8 @@ for year in years:
 							elif value > 0:
 								valuecolor = "'#00FF00'"
 							value = str(value)
-							subprocess.call("convert images/processed/" + record['id'] + ".jpg -fill " + valuecolor + "  -undercolor '#00000080' -pointsize " + str(valuesize) + " -gravity North -annotate +5+0 '" + value + "' images/processed/"  + record['id'] + ".jpg", shell=True)
+							subprocess.call("convert " + filepath + " -fill " + valuecolor + "  -undercolor '#00000080' -pointsize " + str(valuesize) + " -gravity North -annotate +5+0 '" + value + "' " + filepath, shell=True)
 
 		n = n+1
 		completed = (100 * n / len(years))
 		print (str(completed) + "% completed")
-	
-						
-
-
-
-
-'''print len(photos)'''
-
-
-'''yearsubject = {}
-
-for year in years:
-	subjects = {}
-	for street in data:
-		for record in street['records']:
-			if 'year' in record.keys() and 'subjects' in record.keys():
-				if year == record['year']:
-					for subject in record['subjects']:
-						subjectstring = subject[0]
-						if subjectstring in subjects.keys():
-							subjects[subjectstring] += 1
-						else:
-							subjects[subjectstring] = 1
-	yearsubject[year] = subjects
-'''
-
-'''print yearsubject'''
-'''
-
-if not os.path.exists("data"):
-	os.makedirs("data")
-row = ['year','word','frequency']
-with open(outputfile, 'wb') as f:
-	writer = csv.writer(f)
-	writer.writerow(row)
-for year, subjects in yearsubject.iteritems():
-	for subject, frequency in subjects.iteritems():
-		row = []
-		row.append(year)
-		row.append(subject.encode("utf-8") )
-		row.append(frequency)
-		with open(outputfile, 'ab') as f:
-			writer = csv.writer(f)
-			writer.writerow(row)
-'''
