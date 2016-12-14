@@ -34,7 +34,7 @@ def select_by_location(input, output, polygon):
 
 
 def main():
-    input = "records_with_coordinates.csv"
+    input_ = "records_with_coordinates.csv"
     results = "lpasila_records.csv"
     districts_file = 'osaalueet.geojson'
 
@@ -42,7 +42,7 @@ def main():
 
     poly = districts.get_polygon(AREA_CODE_DICT['Länsi-Pasila'])
 
-    select_by_location(input, results, poly)
+    select_by_location(input_, results, poly)
     print(poly.centroid)
 
 
